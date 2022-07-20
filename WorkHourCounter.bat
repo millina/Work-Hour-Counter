@@ -9,24 +9,31 @@ pause
 set "HOURSTART="
 set /p HOURSTART="What was the hour you arrived at work?: "
 	SET /a HELPER = 0
-	if not defined HOURSTART goto :hourcheck
+	if not defined HOURSTART echo Enter a value for hours (0-23) && goto :hourcheck
+	if %HOURSTART% EQU 00 (set /a HOURSTART = 0 && goto :mincheck)
 	SET "var="&for /f "delims=0123456789" %%i in ("%HOURSTART%") do set var=%%i
 	if defined var (set /a HELPER = 1)
 	if %HOURSTART% LSS 0 (set /a HELPER = 1)
 	if %HOURSTART% GTR 23 (set /a HELPER = 1)
+	if %HOURSTART:~0,1% EQU 0 (set /a HELPER = 1)
 	if %HELPER% EQU 1 echo %HOURSTART% is an illegal value, enter a new value for hour (0-23) && goto :hourcheck
+
+	
 
 :mincheck
 set "MINSTART="
 set /p MINSTART="What were the minutes when you arrived at work?: "
 	SET /a HELPER = 0
-	if not defined MINSTART goto :mincheck
+	if not defined MINSTART echo Enter a value for minutes (0-59) && goto :mincheck
+	if %MINSTART% EQU 00 (set /a MINSTART = 0 && goto :times)
 	SET "var="&for /f "delims=0123456789" %%i in ("%MINSTART%") do set var=%%i
 	if defined var (set /a HELPER = 1)
 	if %MINSTART% LSS 0 (set /a HELPER = 1)
 	if %MINSTART% GTR 59 (set /a HELPER = 1)
+	if %MINSTART:~0,1% EQU 0 (set /a HELPER = 1)
 	if %HELPER% EQU 1 echo %MINSTART% is an illegal value, enter a new value for minutes (0-59) && goto :mincheck
-	
+
+:times	
 set /a HOURNOW=%time:~0,2%
 set /a MINNOW =%time:~3,2%
 if %time:~3,1% EQU 0 set /a MINNOW = %MINNOW:~0,2%
@@ -65,7 +72,12 @@ if %MINSWORKED% LSS 0 (set /a HOURSWORKED = %HOURNOW%-%HOURSTART%-2 && set /a MI
 if %MINSWORKED% GTR 59 (set /a HOURSWORKED = %HOURNOW%-%HOURSTART%-1 && set /a MINSWORKED -= 60  && echo You have worked for %HOURSWORKED% hours and %MINSWORKED% minutes 6.)
 
 :echo_answer
-	if %HOURSWORKED% EQU 0 (echo You have worked for %MINSWORKED% minutes.) else (echo You have worked for %HOURSWORKED% hours and %MINSWORKED% minutes.)
+	if %HOURSWORKED% EQU 0 if %MINSWORKED% EQU 1 (echo You have worked for %MINSWORKED% minute. && goto :end)
+	if %HOURSWORKED% EQU 0 (echo You have worked for %MINSWORKED% minutes. && goto :end)
+	if %HOURSWORKED% EQU 1 if %MINSWORKED% EQU 1 (echo You have worked for %HOURSWORKED% hour and %MINSWORKED% minute. && goto :end)
+	if %HOURSWORKED% EQU 1 (echo You have worked for %HOURSWORKED% hour and %MINSWORKED% minutes. && goto :end)
+	if %MINSWORKED% EQU 1 (echo You have worked for %HOURSWORKED% hours and %MINSWORKED% minute. && goto :end)
+	echo You have worked for %HOURSWORKED% hours and %MINSWORKED% minutes.
 :end
 echo Done!
 pause
