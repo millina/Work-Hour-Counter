@@ -66,10 +66,10 @@ set /p LUNCHLENGTH="How long was your lunch break? (in minutes) "
 	SET "var="&for /f "delims=0123456789" %%i in ("%LUNCHLENGTH%") do set var=%%i
 	if defined var (echo %LUNCHLENGTH% is not a number, enter a new value for lunch length && goto :lengthcheck)
 
-if %MINSWORKED% LSS %LUNCHLENGTH% (set /a HOURSWORKED = %HOURNOW%-%HOURSTART%-1 && set /a MINSWORKED = %MINNOW%+60-%MINSTART%-%LUNCHLENGTH% && goto :echo_answer) else (set /a MINSWORKED -= %LUNCHLENGTH% && goto :echo_answer)
+if %MINSWORKED% LSS %LUNCHLENGTH% (set /a HOURSWORKED = %HOURNOW%-%HOURSTART%-1 && set /a MINSWORKED = %MINNOW%+60-%MINSTART%-%LUNCHLENGTH% && goto :lss_zero_check) else (set /a MINSWORKED -= %LUNCHLENGTH% && goto :echo_answer)
 
-if %MINSWORKED% LSS 0 (set /a HOURSWORKED = %HOURNOW%-%HOURSTART%-2 && set /a MINSWORKED = %MINNOW%+120-%MINSTART%-%LUNCHLENGTH% && echo You have worked for %HOURSWORKED% hours and %MINSWORKED% minutes 5. && goto :end)
-if %MINSWORKED% GTR 59 (set /a HOURSWORKED = %HOURNOW%-%HOURSTART%-1 && set /a MINSWORKED -= 60  && echo You have worked for %HOURSWORKED% hours and %MINSWORKED% minutes 6.)
+:lss_zero_check
+	if %MINSWORKED% LSS 0 set /a HOURSWORKED = %HOURNOW%-%HOURSTART%-2 && set /a MINSWORKED = %MINNOW%+120-%MINSTART%-%LUNCHLENGTH% 
 
 :echo_answer
 	if %HOURSWORKED% EQU 0 if %MINSWORKED% EQU 1 (echo You have worked for %MINSWORKED% minute. && goto :end)
