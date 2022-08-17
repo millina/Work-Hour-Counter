@@ -33,10 +33,9 @@ set /p MINSTART="What were the minutes when you arrived at work?: "
 	if %MINSTART:~0,1% EQU 0 (set /a HELPER = 1)
 	if %HELPER% EQU 1 echo %MINSTART% is an illegal value, enter a new value for minutes (0-59) && goto :mincheck
 
-:times	
-set /a HOURNOW=%time:~0,2%
-set /a MINNOW =%time:~3,2%
-if %time:~3,1% EQU 0 set /a MINNOW = %MINNOW:~0,2%
+:times
+if %time:~0,1% EQU 0 (set /a HOURNOW = %time:~1,1%) else (set /a HOURNOW = %time:~0,2%)
+if %time:~3,1% EQU 0 (set /a MINNOW = %time:~4,1%) else (set /a MINNOW = %time:~3,2%)
 if %HOURNOW% LSS %HOURSTART% echo ERROR: Time now is less than when you started working. Please note that this script doesn't have the functionality to count hours when they are divided over multiple days. && goto :end
 if %MINSTART% LSS 10 (echo You arrvied at %HOURSTART%.0%MINSTART%.) else (echo You arrvied at %HOURSTART%.%MINSTART%.)
 if %MINNOW% LSS 10 (echo Time now %HOURNOW%.0%MINNOW%.) else (echo Time now %HOURNOW%.%MINNOW%.)
