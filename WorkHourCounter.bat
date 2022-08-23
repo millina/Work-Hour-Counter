@@ -46,17 +46,19 @@ if %MINNOW% LSS %MINSTART% (set /a HOURSWORKED = %HOURNOW%-%HOURSTART%-1 && set 
 set "LUNCHINC="
 set /p LUNCHINC="Does your lunch break count as working hours? (y/n) "
 	if not defined LUNCHINC goto :yncheck1
-	if NOT %LUNCHINC% EQU y if NOT %LUNCHINC% EQU n (echo %LUNCHINC% is an illegal value, enter a new value && goto yncheck1)
+	if NOT %LUNCHINC% EQU y if NOT %LUNCHINC% EQU Y if NOT %LUNCHINC% EQU n if NOT %LUNCHINC% EQU N (echo %LUNCHINC% is an illegal value, enter a new value && goto yncheck1)
 	
 if %LUNCHINC% EQU y goto :echo_answer
+if %LUNCHINC% EQU Y goto :echo_answer
 
 :yncheck2
 set "HADLUNCH="
 set /p HADLUNCH="Have you had your lunch break yet? (y/n) "
 if not defined HADLUNCH goto :yncheck2
-	if NOT %HADLUNCH% EQU y if NOT %HADLUNCH% EQU n (echo %HADLUNCH% is an illegal value, enter a new value && goto yncheck2)
+if NOT %HADLUNCH% EQU y if NOT %HADLUNCH% EQU Y if NOT %HADLUNCH% EQU n if NOT %HADLUNCH% EQU N (echo %HADLUNCH% is an illegal value, enter a new value && goto yncheck2)
 
 if %HADLUNCH% EQU n goto :echo_answer
+if %HADLUNCH% EQU N goto :echo_answer
 
 :lengthcheck
 set "LUNCHLENGTH="
